@@ -1,27 +1,35 @@
 package com.spring.pos.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tblcategory")
 public class Category {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "categoryid")
 	private int categoryID;
 
+	@Column(name = "categoryname")
 	private String categoryName;
-	
-	public Category() {
-		// TODO Auto-generated constructor stub
-	}
 
-	public Category(ResultSet resultSet) {
-		
-		try {
-			this.categoryID = resultSet.getInt(Metadata.CATEGORYID);
-			this.categoryName = resultSet.getString(Metadata.CATEGORYNAME);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public Category() {
 	}
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "categoryid", referencedColumnName = "categoryid")
+	private List<Product> products;
 
 	public int getCategoryID() {
 		return categoryID;
@@ -38,8 +46,8 @@ public class Category {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
-	
-	public class Metadata{
+
+	public class Metadata {
 		public static final String CATEGORYID = "CategoryID";
 		public static final String CATEGORYNAME = "CategoryName";
 	}

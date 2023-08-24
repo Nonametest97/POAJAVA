@@ -17,7 +17,7 @@ public class LoadAfterStartUp {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void display() {
-		logger.info("Server= {}", contextPath);
+		System.out.println("Server= localhost:8080"+ contextPath);
 	}
 
 }

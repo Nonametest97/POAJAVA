@@ -1,56 +1,59 @@
 package com.spring.pos.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "tblproduct")
 public class Product {
-	
-	private int productID;
-	
-	private String productName;
-	
-	private String barcode;
-	
-	private double unitPrice;
-	
-	private double sellPrice;
-	
-	private Category category;
-	
-	private String photo;
-	
-	private int qtyInStock;
-	
-	private byte[] photoByte;
-	
-	public Product() {
-		// TODO Auto-generated constructor stub
-	}
-	
-//	public Product(ResultSet resultSet) {
-//		try {
-//			this.productID = resultSet.getInt(Metadata.PRODUCTID);
-//			this.productName = resultSet.getString(Metadata.PRODUCTNAME);
-//			this.barcode = resultSet.getString(Metadata.BARCODE);
-//			this.unitPrice = resultSet.getDouble(Metadata.UNITPRICE);
-//			this.sellPrice = resultSet.getDouble(Metadata.SELLPRICE);
-////			this.photo = resultSet.getString(Metadata.PHOTO);
-//			this.photoByte = resultSet.getBytes(Metadata.PHOTO);
-//			this.qtyInStock = resultSet.getInt(Metadata.QTYINSTOCK);
-//			
-//			this.category = Services.CATEGORY_SERVICE.getCategoryById(resultSet.getInt(Category.Metadata.CATEGORYID));
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
 
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "productid")
+	private int productID;
+
+	@Column(name = "productname")
+	private String productName;
+
+	@Column(name = "barcode")
+	private String barcode;
+
+	@Column(name = "unitprice")
+	private double unitPrice;
+
+	@Column(name = "sellprice")
+	private double sellPrice;
+
+	@Lob
+	@Column(name = "photo", columnDefinition = "LONGBLOB", nullable = true)
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] photo;
+
+	@Column(name = "qtyinstock")
+	private int qtyInStock;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "categoryid", referencedColumnName = "categoryid")
+	private Category category;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "productid", referencedColumnName = "productid")
+	private List<AddStock> addStocks;
+
+	public Product() {
 	}
 
 	public int getProductID() {
@@ -93,19 +96,11 @@ public class Product {
 		this.sellPrice = sellPrice;
 	}
 
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	public String getPhoto() {
+	public byte[] getPhoto() {
 		return photo;
 	}
 
-	public void setPhoto(String photo) {
+	public void setPhoto(byte[] photo) {
 		this.photo = photo;
 	}
 
@@ -116,18 +111,24 @@ public class Product {
 	public void setQtyInStock(int qtyInStock) {
 		this.qtyInStock = qtyInStock;
 	}
-	
-	public byte[] getPhotoByte() {
-		return photoByte;
+
+	public Category getCategory() {
+		return category;
 	}
 
-	public void setPhotoByte(byte[] photoByte) {
-		this.photoByte = photoByte;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
+	public List<AddStock> getAddStocks() {
+		return addStocks;
+	}
 
+	public void setAddStocks(List<AddStock> addStocks) {
+		this.addStocks = addStocks;
+	}
 
-	public class Metadata{
+	public class Metadata {
 		public static final String PRODUCTID = "ProductID";
 		public static final String PRODUCTNAME = "ProductName";
 		public static final String BARCODE = "Barcode";
@@ -137,7 +138,5 @@ public class Product {
 		public static final String PHOTO = "Photo";
 		public static final String QTYINSTOCK = "QtyInStock";
 	}
-	
-	
 
 }

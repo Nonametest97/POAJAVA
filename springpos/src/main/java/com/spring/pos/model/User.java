@@ -1,37 +1,85 @@
 package com.spring.pos.model;
 
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "tbluser")
 public class User {
 	private static final Logger LOGGER = LogManager.getLogger(User.class);
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "userid")
 	private int userID;
 
+	@Column(name = "username")
 	private String userName;
 
+	@Column(name = "gender")
 	private String gender;
 
+	@Column(name = "dateofbirth")
 	private Date dateOfBirth;
 
+	@Column(name = "password")
 	private String password;
 
+	@Column(name = "description")
 	private String description;
 
-	private double salary = 0.00;
+	@Column(name = "salary", columnDefinition = "double default 0.00")
+	private double salary;
 
+	@Column(name = "phone")
 	private String phone;
 
+	@Column(name = "active")
 	private String active;
 
+	@Lob
+	@Column(name = "photo", columnDefinition = "LONGBLOB", nullable = true)
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] photo;
+
+	@ManyToOne
+	@JoinColumn(name = "positionid", referencedColumnName = "positionid")
 	private Position position;
 
-	private String photo;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userid", referencedColumnName = "userid")
+	private List<AddStock> addStocks;
+
+	public User() {
+	}
+
+
+	public List<AddStock> getAddStocks() {
+		return addStocks;
+	}
+
+
+	public void setAddStocks(List<AddStock> addStocks) {
+		this.addStocks = addStocks;
+	}
+
 
 	public int getUserID() {
 		return userID;
@@ -113,52 +161,14 @@ public class User {
 		this.position = position;
 	}
 
-	public String getPhoto() {
+	public byte[] getPhoto() {
 		return photo;
 	}
 
-	public void setPhoto(String photo) {
+	public void setPhoto(byte[] photo) {
 		this.photo = photo;
 	}
 
-	public User() {
-
-	}
-
-//	public User(ResultSet resultSet) {
-//		super();
-//		try {
-//			this.userID = resultSet.getInt(User.Metadata.USERID);
-//			this.userName = (String) getOrDefault(resultSet.getString(User.Metadata.USERNAME));
-//			this.gender = (String) getOrDefault(resultSet.getString(User.Metadata.GENDER));
-//			this.dateOfBirth = (Date) getOrDefault(resultSet.getDate(User.Metadata.DATEOFBIRTH), null);
-//			this.password = (String) getOrDefault(resultSet.getString(User.Metadata.PASSWORD));
-//			this.description = (String) getOrDefault(resultSet.getString(User.Metadata.DESCRIPTION));
-//			this.salary = (double) getOrDefault(resultSet.getDouble(User.Metadata.SALARY));
-//			this.phone = (String) getOrDefault(resultSet.getString(User.Metadata.PHONE));
-//			this.active = (String) getOrDefault(resultSet.getString(User.Metadata.ACTIVE));
-//
-//			try {
-//				this.position = Services.POSITION_SERVICE.getPositionById(resultSet.getInt(User.Metadata.POSITIONID));
-//			} catch (Exception e) {
-//				LOGGER.debug(e.getLocalizedMessage(), e);
-//			}
-//
-//			this.photo = (String) getOrDefault(resultSet.getString(User.Metadata.PHOTO));
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
-
-	public Object getOrDefault(Object value, String defaultValue) {
-		return value == null ? defaultValue : value;
-	}
-
-	public Object getOrDefault(Object value) {
-		return getOrDefault(value, "");
-	}
-	
 	public class Metadata {
 		public static final String USERID = "UserID";
 		public static final String USERNAME = "UserName";

@@ -1,41 +1,57 @@
 package com.spring.pos.model;
 
 import java.sql.Date;
-import java.sql.ResultSet;
+import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tblorder")
 public class Order {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "orderid")
 	private int orderID;
 
+	@Column(name = "orderdate")
 	private Date orderDate;
 
-	private User user;
+	@Column(name = "userid")
+	private String userId;
 
+	@Column(name = "totalamount")
 	private double totalAmount;
-	
+
+	@OneToMany
+	@JoinColumn(name = "orderid", referencedColumnName = "orderid")
+	private List<OrderDetail> orderDetails;
+
 	public Order() {
 	}
-	
-	public Order(int orderID, Date orderDate, User user, double totalAmount) {
-		this.orderID = orderID;
-		this.orderDate = orderDate;
-		this.user = user;
-		this.totalAmount = totalAmount;
+
+	public List<OrderDetail> getOrderDetails() {
+		return orderDetails;
 	}
 
+	public void setOrderDetails(List<OrderDetail> orderDetails) {
+		this.orderDetails = orderDetails;
+	}
 
+	public String getUserId() {
+		return userId;
+	}
 
-//	public Order(ResultSet resultSet) {
-//		
-//		try {
-//			this.orderID = resultSet.getInt(Metadata.ORDERID);
-//			this.orderDate = resultSet.getDate(Metadata.ORDERDATE);
-//			this.user = Services.USER_SERVICE.getUserById(resultSet.getInt(User.Metadata.USERID));
-//			this.totalAmount = resultSet.getDouble(Metadata.TOTALAMOUNT);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	public int getOrderID() {
 		return orderID;
@@ -53,14 +69,6 @@ public class Order {
 		this.orderDate = orderDate;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 	public double getTotalAmount() {
 		return totalAmount;
 	}
@@ -68,8 +76,8 @@ public class Order {
 	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	
-	public class Metadata{
+
+	public class Metadata {
 		public static final String ORDERID = "OrderID";
 		public static final String ORDERDATE = "OrderDate";
 		public static final String USERID = "UserID";

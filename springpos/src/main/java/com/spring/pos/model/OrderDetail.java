@@ -1,9 +1,25 @@
 package com.spring.pos.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tblorderdetail")
 public class OrderDetail {
 
-	private Order order;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "orderdetailid")
+	private long orderDetailId;
 
+	@ManyToOne
+	@JoinColumn(name = "productid", referencedColumnName = "productid")
 	private Product product;
 
 	private int qty;
@@ -12,17 +28,20 @@ public class OrderDetail {
 
 	private double total;
 
-//	public OrderDetail(ResultSet resultSet) {
-//		try {
-//			this.order = Services.ORDER_SERVICE.getOrderById(resultSet.getInt(Order.Metadata.ORDERID));
-//			this.product = Services.PRODUCT_SERVICE.getProductById(resultSet.getInt(Product.Metadata.PRODUCTID));
-//			this.qty = resultSet.getInt(Metadata.QTY);
-//			this.price = resultSet.getDouble(Metadata.PRICE);
-//			this.total = resultSet.getDouble(Metadata.TOTAL);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	@ManyToOne
+	@JoinColumn(name = "orderid", referencedColumnName = "orderid")
+	private Order order;
+
+	public OrderDetail() {
+	}
+
+	public long getOrderDetailId() {
+		return orderDetailId;
+	}
+
+	public void setOrderDetailId(long orderDetailId) {
+		this.orderDetailId = orderDetailId;
+	}
 
 	public Order getOrder() {
 		return order;
@@ -63,8 +82,8 @@ public class OrderDetail {
 	public void setTotal(double total) {
 		this.total = total;
 	}
-	
-	public class Metadata{
+
+	public class Metadata {
 		public static final String QTY = "Qty";
 		public static final String PRICE = "Price";
 		public static final String TOTAL = "Total";
