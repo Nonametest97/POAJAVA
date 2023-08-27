@@ -101,6 +101,9 @@ public class ProductController {
 		
 		if(product.getPhoto() !=null && product.getPhoto().length > 0)
 			productResponse.setPhotoUrl(generateUrl(request, productResponse.getProductID()));
+		
+		Category category = product.getCategory();
+		productResponse.setCategoryID(category !=null ? category.getCategoryID() : -1);
 
 		responseStatus.setStatus(ResponseStatus.STATUS_SUCCESS);
 		responseStatus.setMessages("Product has been inserted");

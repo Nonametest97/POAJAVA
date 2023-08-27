@@ -1,5 +1,6 @@
 package com.spring.pos.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -7,14 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.pos.model.Category;
+import com.spring.pos.model.Product;
 import com.spring.pos.model.request.CategoryForm;
+import com.spring.pos.model.response.ProductResponse;
 import com.spring.pos.repo.CategoryRepo;
+import com.spring.pos.repo.ProductRepo;
 
 @Service
 public class CategoryService {
 
 	@Autowired
 	private CategoryRepo repo;
+	
+	@Autowired
+	private ProductRepo proRepo;
 
 	public Category getById(int id) {
 		Optional<Category> category = repo.findById(id);
@@ -51,7 +58,12 @@ public class CategoryService {
 			return false;
 		}
 		
-		if(isDeleteAll) {
+		if(!isDeleteAll) {
+			List<Product> products = category.getProducts();
+			for(Product product : products) {
+				product.setCategory(null);
+				proRepo.save(product);
+			}
 			category.setProducts(null);
 			repo.save(category);
 		}
