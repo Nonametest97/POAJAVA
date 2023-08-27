@@ -69,6 +69,17 @@ public class ProductService {
 			product.setPhoto(photo.getBytes());
 		}
 		
+		int categoryID = form.getCategoryID();
+		if(categoryID != -1) {
+			Category category = categoryService.getById(categoryID);
+			if(category == null) {
+				
+				response.setMessages("Could not find category wit ID [" + categoryID + "]");
+				return null;
+			}
+			product.setCategory(category);
+		}
+		
 		
 		return repo.save(product);
 		

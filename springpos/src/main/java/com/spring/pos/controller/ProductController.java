@@ -135,6 +135,9 @@ public class ProductController {
 		ProductResponse productResponse = new ProductResponse();
 		BeanUtils.copyProperties(product, productResponse);
 		productResponse.setPhotoUrl(ProductController.generateUrl(request, product));
+		
+		Category category = product.getCategory();
+		productResponse.setCategoryID(category !=null ? category.getCategoryID() : -1);
 
 		response.setStatus(ResponseStatus.STATUS_SUCCESS);
 		response.setMessages("");
