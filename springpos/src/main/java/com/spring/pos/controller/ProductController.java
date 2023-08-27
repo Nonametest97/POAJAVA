@@ -46,6 +46,9 @@ public class ProductController {
 			BeanUtils.copyProperties(product, productResponse);
 			productResponse.setPhotoUrl(generateUrl(request, product));
 			
+			Category category = product.getCategory();
+			productResponse.setCategoryID(category !=null ? category.getCategoryID() : -1);
+			
 			list.add(productResponse);
 		}
 		

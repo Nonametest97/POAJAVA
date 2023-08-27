@@ -35,7 +35,7 @@ public class CategoryController {
 	private CategoryService service;
 
 	@GetMapping
-	public ResponseStatus getAllCategory() {
+	public ResponseStatus getAllCategory(HttpServletRequest request) {
 		ResponseStatus responseStatus = new ResponseStatus(ResponseStatus.STATUS_SUCCESS);
 		Iterator<Category> categories = service.getAll().iterator();
 		List<CategoryResponse> list = new ArrayList<CategoryResponse>();
@@ -43,6 +43,18 @@ public class CategoryController {
 			Category category = categories.next();
 			CategoryResponse categoryResponse = new CategoryResponse();
 			BeanUtils.copyProperties(category, categoryResponse);
+			
+			List<ProductResponse> productForms = new ArrayList<ProductResponse>();
+			for (Product product : category.getProducts()) {
+				ProductResponse productResponse = new ProductResponse();
+				BeanUtils.copyProperties(product, productResponse);
+				productResponse.setPhotoUrl(ProductController.generateUrl(request, product));
+				
+				productResponse.setCategoryID(category !=null ? category.getCategoryID() : -1);
+				
+				productForms.add(productResponse);
+			}
+			categoryResponse.setProducts(productForms);
 
 			list.add(categoryResponse);
 		}
@@ -71,6 +83,8 @@ public class CategoryController {
 				ProductResponse productResponse = new ProductResponse();
 				BeanUtils.copyProperties(product, productResponse);
 				productResponse.setPhotoUrl(ProductController.generateUrl(request, product));
+				
+				productResponse.setCategoryID(category !=null ? category.getCategoryID() : -1);
 				
 				productForms.add(productResponse);
 			}
