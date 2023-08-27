@@ -30,6 +30,10 @@ public class ProductService {
 		Optional<Product> product = repo.findById(id);
 		return product.orElse(null);
 	}
+	
+	public Iterable<Product> getAll() {
+		return repo.findAll();
+	}
 
 	public Product insert(ProductForm form, MultipartFile photo, ResponseStatus responseStatus) throws Exception {
 		if (form == null) {

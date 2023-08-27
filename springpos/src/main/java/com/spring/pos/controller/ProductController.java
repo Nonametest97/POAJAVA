@@ -1,5 +1,7 @@
 package com.spring.pos.controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -31,6 +33,25 @@ public class ProductController {
 
 	@Autowired
 	private ProductService service;
+	
+	@GetMapping("/product")
+	public ResponseStatus getAllProduct(HttpServletRequest request) {
+		ResponseStatus responseStatus = new ResponseStatus(ResponseStatus.STATUS_SUCCESS);
+		Iterator<Product> products = service.getAll().iterator();
+		
+		List<ProductResponse> list = new ArrayList<ProductResponse>();
+		while(products.hasNext()) {
+			Product product = products.next();
+			ProductResponse productResponse = new ProductResponse();
+			BeanUtils.copyProperties(product, productResponse);
+			productResponse.setPhotoUrl(generateUrl(request, product));
+			
+			list.add(productResponse);
+		}
+		
+		responseStatus.setResult(list);
+		return responseStatus;
+	}
 
 	@GetMapping("/product/{id}")
 	public ResponseStatus getProductById(@PathVariable int id, @RequestParam(required = false) boolean detail,
@@ -85,6 +106,7 @@ public class ProductController {
 		return responseStatus;
 	}
 
+	//use postman with this since Swagger UI messed up the field
 	@PatchMapping("/product/{id}")
 	public ResponseStatus updateProduct(@PathVariable int id, @ModelAttribute ProductForm form, BindingResult binding,
 			@RequestPart(required = false) MultipartFile photo, HttpServletRequest request) throws Exception {
